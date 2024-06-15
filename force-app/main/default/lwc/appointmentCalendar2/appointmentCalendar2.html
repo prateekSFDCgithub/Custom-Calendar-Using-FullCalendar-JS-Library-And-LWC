@@ -1,0 +1,209 @@
+<template>
+    <lightning-card>
+      <div class="calendar-card">
+            <div class="slds-theme_shade slds-box">
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col slds-size_1-of-3">
+                        <div class="slds-media slds-no-space slds-grow">
+                            <div class="slds-media__figure">
+                                <lightning-icon icon-name="standard:event" size="medium"></lightning-icon>
+                            </div>
+                            <div class="slds-media__body">
+                                <p class="slds-line-height_reset">Appointment Calendar</p>
+                                <h1 class="slds-page-header__title slds-m-right_small slds-align-middle slds-truncate">{calendarTitle}</h1>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="slds-col slds-size_2-of-3 slds-clearfix">
+                        <div class="slds-float_right slds-p-top_xx-small">
+                            <lightning-button-icon
+                                variant="border-filled"
+                                icon-name="utility:chevronleft"
+                                value="previous"
+                                onclick={calendarActionsHandler}>
+                            </lightning-button-icon>
+                            <lightning-button-icon
+                                variant="border-filled"
+                                icon-name="utility:chevronright"
+                                value="next"
+                                onclick={calendarActionsHandler}>
+                            </lightning-button-icon>
+                            <lightning-button
+                                label="Today"
+                                class="slds-m-horizontal_small"
+                                value="today"
+                                onclick={calendarActionsHandler}>
+                            </lightning-button>
+                            <lightning-button-icon
+                                variant="border-filled"
+                                icon-name="utility:refresh"
+                                class="slds-m-left_medium"
+                                value="refresh"
+                                onclick={calendarActionsHandler}>
+                            </lightning-button-icon>
+                            <lightning-button-menu alternative-text="Show menu" variant="border-filled"
+                                icon-name="utility:event" class="slds-m-horizontal_small"
+                                menu-alignment="auto" onselect={changeViewHandler}>
+                                <template for:each={viewOptions} for:item="menuItem">
+                                    <lightning-menu-item
+                                        key={menuItem.viewName}
+                                        value={menuItem.viewName}
+                                        label={menuItem.label}
+                                        checked={menuItem.checked}>
+                                    </lightning-menu-item>
+                                </template>
+                            </lightning-button-menu>
+                            <lightning-button
+                                label={buttonLabel}
+                                class="slds-m-horizontal_small"
+                                value="new"
+                                onclick={calendarActionsHandler}>
+                            </lightning-button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="slds-grid slds-gutters ">
+                    <div class="slds-col slds-size_2-of-12">
+                        <div style="margin-bottom:0.5rem">Location</div>
+                        <div class="slds-grid slds-gutters slds-flex slds-align-center">
+                            <lightning-input name="Location"
+                                             variant="label-hidden"
+                                             value={LocationValue}
+                                             onclick={handleLocationInputClick}
+                                             onkeydown={handleKeydown}>
+                            </lightning-input>
+                            <lightning-button-icon
+                                icon-name="utility:close"
+                                alternative-text="Clear"
+                                variant="bare"
+                                class="custom-button-icon slds-m-left_x-small"
+                                onclick={handleLocationClearClick}>
+                            </lightning-button-icon>
+                        </div>
+                        <template if:true={MakeLocationVisible}>
+                            <div class="picklist-container">
+                                <template for:each={LocationValues} for:item="LocationVal">
+                                    <div class="picklist-item"
+                                         name="LocationValues"
+                                         key={LocationVal}
+                                         onclick={handleLocationPicklistSelect}
+                                         value={LocationVal}>
+                                        {LocationVal}
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+
+                    <div class="slds-col slds-size_2-of-12">
+                        <div style="margin-bottom:0.5rem">Work Types</div>
+                        <div class="slds-grid slds-gutters slds-flex slds-align-center">
+                            <lightning-input name="WorkTypes"
+                                             variant="label-hidden"
+                                             value={WorkTypeValue}
+                                             onclick={handleInputClick}
+                                             onkeydown={handleKeydown}
+                                             disabled = {isDisabledWorkType}>
+                            </lightning-input>
+                            <lightning-button-icon
+                                icon-name="utility:close"
+                                alternative-text="Clear"
+                                variant="bare"
+                                class="custom-button-icon slds-m-left_x-small"
+                                onclick={handleClearClick}>
+                            </lightning-button-icon>
+                        </div>
+                        <template if:true={MakeWorkTypeVisible}>
+                            <div class="picklist-container">
+                                <template for:each={WorkTypeValues} for:item="WorkTypeVal">
+                                    <div class="picklist-item"
+                                         name="WorkTypeValues"
+                                         key={WorkTypeVal}
+                                         onclick={handlePicklistSelect}
+                                         value={WorkTypeVal}>
+                                        {WorkTypeVal}
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+
+                    <div class="slds-col slds-size_2-of-12">
+                        <div style="margin-bottom:0.5rem">Purpose</div>
+                        <div class="slds-grid slds-gutters slds-flex slds-align-center">
+                            <lightning-input name="Purpose"
+                                             variant="label-hidden"
+                                             value={PurposeValue}
+                                             onclick={handlePurposeInputClick}
+                                             onkeydown={handleKeydown}
+                                             disabled = {isDisabledPurpose}>
+                            </lightning-input>
+                            <lightning-button-icon
+                                icon-name="utility:close"
+                                alternative-text="Clear"
+                                variant="bare"
+                                class="custom-button-icon slds-m-left_x-small"
+                                onclick={handlePurposeClearClick}>
+                            </lightning-button-icon>
+                        </div>
+                        <template if:true={MakePurposeVisible}>
+                            <div class="picklist-container">
+                                <template for:each={PurposeValues} for:item="PurposeVal">
+                                    <div class="picklist-item"
+                                         name="PurposeValues"
+                                         key={PurposeVal}
+                                         onclick={handlePurposePicklistSelect}
+                                         value={PurposeVal}>
+                                        {PurposeVal}
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slds-grid slds-gutters">
+            <div class="slds-col slds-size_9-of-12">
+                     <div class="fullcalendar"></div>
+                    </div>
+                    <div class="slds-col slds-size_3-of-12">
+                     <div class="date-picker">
+        <div class="header">
+            <lightning-button-icon icon-name="utility:left" variant="border-filled" onclick={goToPreviousMonth}></lightning-button-icon>
+            <span class="month-year">{monthYearDisplay}</span>
+            <lightning-button-icon icon-name="utility:right" variant="border-filled" onclick={goToNextMonth}></lightning-button-icon>
+        </div>
+        <table class="day-grid">
+            <thead>
+                <tr>
+                    <th>Sun</th>
+                    <th>Mon</th>
+                    <th>Tue</th>
+                    <th>Wed</th>
+                    <th>Thu</th>
+                    <th>Fri</th>
+                    <th>Sat</th>
+                </tr>
+            </thead>
+            <tbody>
+                <template for:each={weeks} for:item="week">
+                    <tr key={week.id}>
+                        <template for:each={week.days} for:item="day">
+                            <td key={day.dateString} class={day.classes} data-datestring={day.dateString} onclick={selectDate}>
+    {day.day}
+</td>
+                        </template>
+                    </tr>
+                </template>
+            </tbody>
+        </table>
+    </div>
+                    </div>
+                    
+        </div>
+    </lightning-card>
+</template>
